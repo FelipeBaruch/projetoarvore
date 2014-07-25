@@ -2,44 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct arvore // Estrutura de dados em que se baseia a arvore
+typedef struct arvore // Estrutura de dados em que se baseia a arvore
 {
   int elemento;  // Elemento a ser inserido
-  struct arvore *acima; // Ponteiro que irá apontar para o elemento acima, sendo que na raiz, apontara para nulo
   struct arvore *esquerda; // Ponteiro que irá apontar para o elemento a ser inserido na "esquerda"
   struct arvore *direita; // Ponteiro que irá apontar para o elemento a ser inserido na "direita"
-};
+}arvore;
 
 struct arvore *arv;
 
-void ini_arvore() // Função responsável por inicializar a arvore
-{
-  struct arvore *aux; //Ponteiro local do tipo arvore
-  aux = (struct arvore*) malloc(sizeof(struct arvore)); //Aloca um espa?o na memoria para a variavel aux
-  aux->esquerda = NULL; //Inicia o primeiro elemento á esquerda da arvore como valor nulo
-  aux->elemento = 0;
-  aux->direita = NULL; //Inicia o primeiro elemento á direita da fila como valor nulo
-  aux->acima = NULL; // Aponta o ponteiro acima para nulo, virando defitivamente a raiz da arvore
-  arv = aux; // aux ? igual a primeiro elemnto da pilha
+void criarArvore(arvore **pRaiz){
+    *pRaiz = NULL;
 }
 
 int main(void) //FUN??O PRINCIPAL
 {
-  ini_arvore();
-  menu();
+  arvore **pRaiz;
+  criarArvore(pRaiz);
+  menu_modulo1();
   system("pause");
   return 0;
 }
+//INDICE DE FUNÇÕES
+void criarArvore();
+int menu_modulo1(void);
+void insere(arv, num);
 
-int menu(void);
-void insere();
-void most_todas(struct arvore *posicao);
 
-
-
-int menu(void)
+int menu_modulo1(void)
 {
   int op;
+  int num;
 
   do
   {
@@ -55,12 +48,14 @@ int menu(void)
     {
       case 1:
         {
-          insere();
+          printf("Informe o elemento a ser inserido: ");
+          scanf("%d", &num);
+          insere(arv, num);
+          system("pause");
           break;
         }
       case 2:
         {
-            most_todas(arv);
             system("pause");
           break;
         }
@@ -78,41 +73,17 @@ int menu(void)
   }while(1);
 }
 
-void insere()
-{
-  struct arvore *novo = (struct arvore*) malloc(sizeof(struct arvore));
-  int n;
-
-  system("cls");
-  printf("Digite o novo elemento");
-  scanf("%d", &novo->elemento);
-
-  novo->direita = NULL;
-  novo->esquerda = NULL;
-  novo->acima = arv;
-  printf("\t1-Inserir pela esquerda\n\t2-Inserir pela direita\n\n");
-  scanf("%d", &n);
-  if (n == 1)
-  {
-      arv->esquerda = novo;
-  }
-  if (n == 2)
-  {
-      arv->direita = novo;
-  }
-
-  system("cls");
-  printf("\nElemento Inserido!\n");
-
-  system("pause");
-}
-
-void most_todas(struct arvore *posicao) 
-{
-  system("cls");
-  while(posicao->acima!= NULL){
-  struct arvore *tmp = posicao->acima;
-  printf("Elemento: %d\n",posicao->elemento);
-  posicao = tmp;
-  }
+void insere(arvore **pRaiz, int numero){
+    if(*pRaiz == NULL){
+        *pRaiz = (arvore *) malloc(sizeof(arvore));
+        (*pRaiz)->esquerda = NULL;
+        (*pRaiz)->direita = NULL;
+        (*pRaiz)->elemento = numero;
+    }else{
+        if(numero < (*pRaiz)->elemento)
+            insere(&(*pRaiz)->esquerda, numero);
+        if(numero > (*pRaiz)->elemento)
+            insere(&(*pRaiz)->direita, numero);
+    }
+    printf("Elemento inserido!");
 }
